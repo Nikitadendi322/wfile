@@ -1,0 +1,44 @@
+### Cоздание множества новых сотрудников;
+POST localhost:8080/employees/
+
+### Редактирование сотрудника с указанным id;
+PUT localhost:8080/employees/{id}
+
+### Возвращение информации о сотруднике с переданным id;
+GET localhost:8080/employees/{id}
+
+### Удаление сотрудника с переданным id;
+DELETE localhost:8080/employees/{id}
+
+### Возвращение всех сотрудников, зарплата которых выше переданного параметра salary.
+GET localhost:8080/employees/salaryHigherThan?salary=
+### Получение суммы зарплат сотрудников
+GET http://localhost:8080/employee/salary/sum
+
+### Получение сотрудника с минимальной зарплатой
+GET http://localhost:8080/employee/salary/min
+
+### Получение сотрудника с максимальной зарплатой
+GET http://localhost:8080/employee/salary/max
+
+### Получение всех сотрудников, зарплата которых больше средней
+GET http://localhost:8080/employee/high-salary
+
+###
+POST http://localhost:8080/report/
+
+### Получение репорта по ID
+GET http://localhost:8080/report/1
+
+### Получение репорта по ID
+GET http://localhost:8080/report/file/2
+
+### Загрузка файла с сотрудниками в БД
+POST http://localhost:8080/employee/upload
+Content-Disposition: form-data; name="employees"; filename="employees.json"
+Content-Type: application/json
+
+< ./employee.json
+
+### Получение репорта по ID
+GET http://localhost:8080/report/file/5

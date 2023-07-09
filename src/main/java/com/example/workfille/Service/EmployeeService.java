@@ -12,6 +12,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,12 +31,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
+    Logger logger= LoggerFactory.getLogger(EmployeeService.class);
+
 
     private final EmployeeRepository employeeRepository;
 
     private final EmployeeMapper employeeMapper;
     private final ObjectMapper objectMapper;
     private final ReportRepository reportRepository;
+
 
     public EmployeeService(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper, ObjectMapper objectMapper, ReportRepository reportRepository) {
 
@@ -61,6 +66,7 @@ public class EmployeeService {
     }
 
     public EmployeeDto getEmployeeWithMinSalary() {
+        logger.info("Вызван метод поиска сотрудника по минимальной заработной плате");
         Page<EmployeeDto> page = employeeRepository.getEmployeeWithMinSalary(PageRequest.of(0, 1));
         if (page.isEmpty()) {
             return null;
@@ -70,6 +76,7 @@ public class EmployeeService {
     }
 
     public EmployeeDto getEmployeeWithMaxSalary() {
+        logger.info("Вызван метод поиска сотрудника по максимальной заработной плате");
         List<EmployeeDto> employeeWithMaxSalary = getEmployeeWithHighestSalary();
         if (employeeWithMaxSalary.isEmpty()) {
             return null;
@@ -101,11 +108,13 @@ public class EmployeeService {
     }
 
     public void update(int id, EmployeeDto employee) {
+        logger.info("Вызван метод изменения сотрудника");
         Employee oldEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
         oldEmployee.setSalary(employee.getSalary());
         oldEmployee.setName(employee.getName());
         employeeRepository.save(oldEmployee);
+        logger.debug("Сотрудник изменен и тперь он {}",employee);
     }
 
     public EmployeeDto get(int id) {
@@ -126,6 +135,7 @@ public class EmployeeService {
     }
 
     public List<EmployeeDto> getEmployeeWithSalaryHigherThan(double salary) {
+        logger.info("Вызван метод поиска сотрудника по средней заработной плате");
         return employeeRepository.findEmployeeBySalaryIsGreaterThan(salary).stream()
                 .map(employeeMapper::toDto)
                 .collect(Collectors.toList());
@@ -211,5 +221,13 @@ public class EmployeeService {
                 .map(File::new)
                 .orElse(null);
         return null;
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
     }
 }
